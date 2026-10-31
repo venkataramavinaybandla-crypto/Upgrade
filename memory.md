@@ -72,3 +72,4 @@ Sources are summarized, not quoted. Re-verify anything marked UNVERIFIED before 
 | Date | Entry |
 |---|---|
 | 2026-10-31 | Brainstorm completed. Planning files created. Phase 0 not started. |
+| 2026-10-31 | Phase 0 completed: TypeScript scaffold, contracts, ports, boundary checker, test runner, check script. |

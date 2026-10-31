@@ -1,0 +1,24 @@
+{
+  "name": "upgrade",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "upgrade": "./dist/main.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
+    "check": "npm run typecheck && npm run check:boundaries && npm run test"
+  },
+  "dependencies": {
+    "commander": "^13.1.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.7"
+  }
+}

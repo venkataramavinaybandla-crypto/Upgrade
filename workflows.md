@@ -142,4 +142,5 @@ Applies to frontend-trace rules, readiness checks, and host detection rules.
 
 ## 16. Check script (created in Phase 0)
 
-One command runs everything: type check, lint, boundary check, tests. Until Phase 0 creates it, this section is a placeholder. Record the exact command here once it exists.
+One command runs everything: type check, lint, boundary check, tests.
+Command: `npm run check` (executes `npm run typecheck && npm run check:boundaries && npm run test`).
