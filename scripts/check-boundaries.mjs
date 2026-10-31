@@ -1,3 +1,7 @@
+// ROLE: Verifies architectural import boundaries between layers according to architecture.json; exits 1 on violations.
+// INPUTS: Filesystem crawl of all .ts/.js files under src/.
+// CRITICAL: Prevents illegal imports such as core importing infra or cli importing core.
+
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -86,3 +90,4 @@ if (errors.length > 0) {
 } else {
   console.log('Boundary check passed.');
 }
+

@@ -1,3 +1,7 @@
+// ROLE: Defines shared Zod schemas and TypeScript types for domain entities, snapshots, and reports.
+// INPUTS: None (pure contract definitions).
+// CRITICAL: May import nothing else in src/; serves as the single schema source of truth.
+
 import { z } from 'zod';
 
 export const EnvSnapshotSchema = z.object({
@@ -266,3 +270,4 @@ export const SyncDiffSchema = z.object({
   }))
 });
 export type SyncDiff = z.infer<typeof SyncDiffSchema>;
+

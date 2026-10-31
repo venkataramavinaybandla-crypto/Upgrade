@@ -1,3 +1,7 @@
+// ROLE: Validates workspace safety guards, refusal rules, project markers, and path jail bounds.
+// INPUTS: Candidate path string, HostContext, WorkspaceDeps { fsRead, env, logger? }.
+// CRITICAL: Refuses system/home/root folders; assertInsideJail prevents directory traversal and symlink escape.
+
 import type { HostContext, WorkspaceRef, WorkspaceRefusalReason, WorkspaceSource } from '../../contracts/index.js';
 import type { FsRead, Env, Logger } from '../../ports/index.js';
 

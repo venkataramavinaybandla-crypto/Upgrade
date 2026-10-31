@@ -1,3 +1,7 @@
+// ROLE: Evaluates Antigravity IDE terminal and agent shell environment markers.
+// INPUTS: EnvSnapshot { names, values, platform, isWsl, isTty, cwd }.
+// CRITICAL: Distinguishes ide-terminal (ANTIGRAVITY_CLI_ALIAS) from agent-shell (ANTIGRAVITY_AGENT); names only.
+
 import type { EnvSnapshot } from '../../../contracts/index.js';
 import type { HostRule, HostRuleResult } from './types.js';
 
@@ -42,3 +46,4 @@ export const antigravityRule: HostRule = {
     };
   }
 };
+

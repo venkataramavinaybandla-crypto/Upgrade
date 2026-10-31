@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "check:boundaries": "node scripts/check-boundaries.mjs",
-    "check": "npm run typecheck && npm run check:boundaries && npm run test"
+    "check:headers": "node scripts/check-headers.mjs",
+    "check": "npm run check:headers && npm run typecheck && npm run check:boundaries && npm run test"
   },
   "dependencies": {
     "commander": "^13.1.0",
@@ -22,3 +23,4 @@
     "vitest": "^3.0.7"
   }
 }
+

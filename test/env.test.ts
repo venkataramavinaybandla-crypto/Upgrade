@@ -1,3 +1,7 @@
+// ROLE: Tests terminal host classification across 13 distinct environment configurations.
+// INPUTS: Table of plain-object EnvSnapshot mocks.
+// CRITICAL: Asserts variable names only are recorded in signals and never env values.
+
 import { describe, it, expect } from 'vitest';
 import { classifyHost } from '../src/core/env/index.js';
 import type { EnvSnapshot } from '../src/contracts/index.js';
@@ -189,3 +193,4 @@ describe('classifyHost (src/core/env)', () => {
     });
   });
 });
+

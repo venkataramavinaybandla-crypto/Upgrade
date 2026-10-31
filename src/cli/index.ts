@@ -1,3 +1,7 @@
+// ROLE: Configures Commander CLI program routes, option parsing, and exits with assigned exit codes.
+// INPUTS: CliContext { fsRead, env, prompt, recentStore?, logger?, buildSnapshot }.
+// CRITICAL: CLI layer contains no business logic; it delegates directly to application use-cases.
+
 import { Command } from 'commander';
 import { runDoctorEnv, runScanPhase1, AppError, type ScanDeps, type DoctorDeps } from '../app/index.js';
 import { copy } from './copy.js';

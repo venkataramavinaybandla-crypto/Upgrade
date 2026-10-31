@@ -1,3 +1,7 @@
+// ROLE: Evaluates vanilla VS Code and leaked VS Code fork markers with high or medium confidence.
+// INPUTS: EnvSnapshot { names, values, platform, isWsl, isTty, cwd }.
+// CRITICAL: Evaluated after Antigravity/Cursor/Windsurf to prevent false positives on VS Code forks.
+
 import type { EnvSnapshot } from '../../../contracts/index.js';
 import type { HostRule, HostRuleResult } from './types.js';
 
@@ -38,3 +42,4 @@ export const vscodeRule: HostRule = {
     return null;
   }
 };
+

@@ -1,3 +1,7 @@
+// ROLE: Evaluates Zed IDE terminal environment markers.
+// INPUTS: EnvSnapshot { names, values, platform, isWsl, isTty, cwd }.
+// CRITICAL: Matches TERM_PROGRAM=zed; signals array must record variable names only.
+
 import type { EnvSnapshot } from '../../../contracts/index.js';
 import type { HostRule, HostRuleResult } from './types.js';
 
@@ -29,3 +33,4 @@ export const zedRule: HostRule = {
     return null;
   }
 };
+

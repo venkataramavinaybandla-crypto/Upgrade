@@ -1,3 +1,7 @@
+// ROLE: Asks explicit user consent before scanning or reading code in the workspace folder.
+// INPUTS: WorkspaceRef, ConsentOptions { yes?: boolean }, Prompt port.
+// CRITICAL: Honors --yes flag; never permits reads if workspace was refused or consent declined.
+
 import type { WorkspaceRef } from '../contracts/index.js';
 import type { Prompt } from '../ports/index.js';
 

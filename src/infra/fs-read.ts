@@ -1,3 +1,7 @@
+// ROLE: Implements FsRead port using Node fs/promises.
+// INPUTS: Filesystem paths: string.
+// CRITICAL: Must correctly reflect file existence, directory status, and canonical realpaths.
+
 import fs from 'node:fs/promises';
 import type { FsRead, FileStat } from '../ports/index.js';
 
@@ -32,3 +36,4 @@ export class NodeFsRead implements FsRead {
     return await fs.realpath(path);
   }
 }
+

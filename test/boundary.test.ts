@@ -1,3 +1,7 @@
+// ROLE: Tests architectural layer boundary enforcement and validates detection of illegal imports.
+// INPUTS: Executes scripts/check-boundaries.mjs directly and against synthetic illegal imports.
+// CRITICAL: Must ensure core-to-infra import violations cause immediate test failures.
+
 import { describe, it, expect } from 'vitest';
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -25,3 +29,4 @@ describe('Boundary checker', () => {
     }
   });
 });
+

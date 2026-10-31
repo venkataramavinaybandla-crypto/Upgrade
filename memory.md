@@ -22,14 +22,16 @@ Status values: `decided` (user said so), `proposed` (agent suggestion awaiting t
 | D-010 | 2026-10-31 | Snapshot the UI-IR (schema), not raw code | Small meaningful diffs instead of line noise | proposed |
 | D-011 | 2026-10-31 | Undo = snapshot before write, journal before operation, hash check before touching a file | Crash-safe, protects user edits | proposed |
 | D-012 | 2026-10-31 | Ownership zones: `generated/` is Upgrade's, `custom/` is the user's. Edited generated file gets a `.upgrade-new` sibling instead of an overwrite | Sync must never destroy user work | proposed |
-| D-013 | 2026-10-31 | Stack: TypeScript strict, Node >= 20 ESM, commander, @clack/prompts, web-tree-sitter (WASM), zod, vitest | See findings F-003, F-004 | proposed |
+| D-013 | 2026-10-31 | Stack: TypeScript strict, Node >= 20 ESM, commander, zod, vitest. Built with npm, check command is `npm run check` | Tested in Phase 0 | decided |
 | D-014 | 2026-10-31 | Layered architecture with one-way dependencies, ports for all side effects, registries for extension | User rule: connected pieces, easy to replace | proposed |
 | D-015 | 2026-10-31 | Host handling: IDE terminal uses the workspace; plain terminal asks to open a folder. After resolving, pass `workspaceRoot` explicitly and never rely on `process.cwd()` | A child process cannot change the parent shell's directory | decided (behavior), proposed (mechanics) |
 | D-016 | 2026-10-31 | Consent before any read. Never read secret files (`.env*`, keys). No network, no telemetry | Trust: user explicitly approves a peek | decided (consent), proposed (rest) |
 | D-017 | 2026-10-31 | Manual `upgrade sync` first. No file watcher in MVP | A watcher fires mid-edit, which is the half-built state D-009 bans | proposed |
 | D-018 | 2026-10-31 | Planning files: `context.md`, `architecture.json`, `memory.md`, `workflows.md` beside the existing `AGENTS.md` | User request | decided |
-| D-019 | 2026-10-31 | In-terminal folder browsing deferred to Phase 8 | Plain-terminal offers recent folders and typed/pasted path in Phase 1 minimal shell | decided |
-| D-020 | 2026-10-31 | User-level storage for recent.json | Recent workspaces are global to the user, not per-project | decided |
+| D-019 | 2026-10-31 | Three-line file header convention (ROLE, INPUTS, CRITICAL, max 140 chars) on all code files, verified by scripts/check-headers.mjs | Reader comprehension without opening files | decided |
+| D-020 | 2026-10-31 | Planning files (context.md, architecture.json, memory.md, workflows.md) stay tracked in git; the gitignore idea was dropped | Central source of truth across agent sessions | decided |
+| D-021 | 2026-10-31 | In-terminal folder browsing deferred to Phase 8 | Plain-terminal offers recent folders and typed/pasted path in Phase 1 minimal shell | decided |
+| D-022 | 2026-10-31 | User-level storage for recent.json | Recent workspaces are global to the user, not per-project | decided |
 
 ## 2. Research findings (2026-10-31)
 
@@ -51,9 +53,10 @@ Sources are summarized, not quoted. Re-verify anything marked UNVERIFIED before 
 | Q-002 | When a backend field disappears, should sync auto-remove the UI or flag and ask? | Phase 6 | Flag and ask |
 | Q-003 | Undo granularity: all-or-nothing per session, or step-level too? | Phase 5 | All-or-nothing |
 | Q-004 | Remember consent per folder, or ask every run? | Phase 1 | Ask every run |
-| Q-005 | Which env vars does the real Antigravity terminal set? | Phase 1 | Treat `TERM_PROGRAM=vscode` as IDE with medium confidence |
-| Q-006 | Confirm the proposed stack in D-013 | Phase 0 | Proceed as proposed |
+| Q-005 | Which env vars does the real Antigravity terminal set? | Phase 1 | Resolved: ANTIGRAVITY_CLI_ALIAS observed in real Antigravity terminal |
+| Q-006 | Confirm the proposed stack in D-013 | Phase 0 | Resolved: confirmed TypeScript strict, ESM, vitest, zod |
 | Q-007 | Does Freebuff's terminal expose its own env markers? | Phase 1 | Fallback to plain-terminal rules |
+| Q-008 | Should generated frontend files shipped to users carry a header and an ownership marker? | Phase 9 | Ownership marker only, decide in Phase 9 |
 
 ## 4. Rejected ideas (do not revisit without new evidence)
 

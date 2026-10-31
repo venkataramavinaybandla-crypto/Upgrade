@@ -1,3 +1,7 @@
+// ROLE: Evaluates Windows Terminal environment markers.
+// INPUTS: EnvSnapshot { names, values, platform, isWsl, isTty, cwd }.
+// CRITICAL: Identifies WT_SESSION as plain-terminal; signals must record variable names only.
+
 import type { EnvSnapshot } from '../../../contracts/index.js';
 import type { HostRule, HostRuleResult } from './types.js';
 
@@ -15,3 +19,4 @@ export const windowsTerminalRule: HostRule = {
     return null;
   }
 };
+

@@ -1,3 +1,7 @@
+// ROLE: Tests Commander CLI commands (doctor, scan) with flags, json output, and exit codes.
+// INPUTS: Mock CliContext with mocked stdin/stdout.
+// CRITICAL: Asserts exit codes 0, 2, 10, and 11 match failure modes precisely.
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createCli } from '../src/cli/index.js';
 import type { FsRead, Env, Prompt, FileStat } from '../src/ports/index.js';
@@ -141,3 +145,4 @@ describe('CLI (src/cli)', () => {
     expect(stderrLogs.join('\n')).toContain('Usage error');
   });
 });
+

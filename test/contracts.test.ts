@@ -1,3 +1,7 @@
+// ROLE: Verifies Zod schema validation and type parsing for core data contracts.
+// INPUTS: Sample valid and invalid contract objects.
+// CRITICAL: Ensures contract schemas reject malformed objects before runtime execution.
+
 import { describe, it, expect } from 'vitest';
 import {
   EnvSnapshotSchema,
@@ -59,3 +63,4 @@ describe('Contracts validation', () => {
     expect(parsed.refusalReason).toBe('system-dir');
   });
 });
+

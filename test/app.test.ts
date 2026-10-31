@@ -1,3 +1,7 @@
+// ROLE: Tests consent gate, path sanitization, and workspace resolution use-cases.
+// INPUTS: Mock FsRead, Env, Prompt, and RecentStore implementations.
+// CRITICAL: Ensures plain terminals never use cwd by default and non-interactive requires flags.
+
 import { describe, it, expect, vi } from 'vitest';
 import { askConsent, resolveWorkspace, cleanCandidatePath, AppError } from '../src/app/index.js';
 import type { HostContext, WorkspaceRef } from '../src/contracts/index.js';
@@ -216,3 +220,4 @@ describe('src/app Use-Cases', () => {
     });
   });
 });
+

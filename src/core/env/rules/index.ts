@@ -1,3 +1,7 @@
+// ROLE: Exports the priority-ordered registry of terminal host detection rules.
+// INPUTS: Individual host rules from ./rules/*.js.
+// CRITICAL: Priority order must match architecture.json hostDetection.priority.
+
 import type { HostRule } from './types.js';
 import { cursorRule } from './cursor.js';
 import { windsurfRule } from './windsurf.js';
@@ -18,3 +22,4 @@ export const HOST_RULES_REGISTRY: readonly HostRule[] = [
   windowsTerminalRule,
   fallbackPlainRule
 ] as const;
+

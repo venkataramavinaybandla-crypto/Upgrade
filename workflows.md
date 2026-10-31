@@ -24,6 +24,7 @@ Duties after every task: update `memory.md` (log line, new decisions or question
 
 ## 2. Ground rules
 
+- Three-line header convention (ROLE, INPUTS, CRITICAL, max 140 chars per line) on every code file (.ts, .mjs, .js, .cjs under src/, scripts/, test/, and root config files). Update header in the same commit whenever behavior, inputs, or invariants change.
 - One module per task. Cross-module work goes through contracts, never through internals.
 - `core` has no `fs`, `process`, or `console`. Use ports.
 - Side effects at the edge. Wiring happens only in `src/main.ts`.
@@ -118,7 +119,8 @@ Applies to frontend-trace rules, readiness checks, and host detection rules.
 
 ## 13. Definition of done
 
-- Check script is green (types, lint, boundaries, tests).
+- Check script is green (`npm run check`: check-headers, types, boundaries, tests).
+- Header convention verified (check-headers green), and file header updated in the same commit whenever behavior, inputs, or invariants change.
 - New behavior has a fixture and a test.
 - No contract drift between `architecture.json` and `src/contracts`.
 - `memory.md` log updated. Phase status updated if it changed.
@@ -142,5 +144,5 @@ Applies to frontend-trace rules, readiness checks, and host detection rules.
 
 ## 16. Check script (created in Phase 0)
 
-One command runs everything: type check, lint, boundary check, tests.
-Command: `npm run check` (executes `npm run typecheck && npm run check:boundaries && npm run test`).
+One command runs everything: headers, type check, boundary check, tests.
+Command: `npm run check` (executes `npm run check:headers && npm run typecheck && npm run check:boundaries && npm run test`).

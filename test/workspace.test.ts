@@ -1,3 +1,7 @@
+// ROLE: Tests workspace folder safety guards, OS folder refusals, and path jail bounds.
+// INPUTS: Mock FsRead and Env instances with varied directory trees.
+// CRITICAL: Verifies assertInsideJail prevents escaping parent roots and traversal attacks.
+
 import { describe, it, expect, vi } from 'vitest';
 import { validateWorkspace, assertInsideJail, PROJECT_MARKERS } from '../src/core/workspace/index.js';
 import type { FsRead, Env, FileStat } from '../src/ports/index.js';
@@ -186,3 +190,4 @@ describe('assertInsideJail', () => {
     ).rejects.toThrow('Path jail violation');
   });
 });
+

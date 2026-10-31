@@ -1,3 +1,7 @@
+// ROLE: Implements Prompt port using plain unstyled Node readline.
+// INPUTS: Prompt message strings and option selections.
+// CRITICAL: Must run synchronously with user terminal stdin/stdout without external UI libraries.
+
 import readline from 'node:readline';
 import type { Prompt, PromptSelectOption, PromptTextOptions } from '../ports/index.js';
 
@@ -49,3 +53,4 @@ export class ReadlinePrompt implements Prompt {
     return res || startAt;
   }
 }
+

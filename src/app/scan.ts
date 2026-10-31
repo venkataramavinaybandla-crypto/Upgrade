@@ -1,3 +1,7 @@
+// ROLE: Coordinates Phase 1 scan use-case (host classification, workspace resolution, and consent gate).
+// INPUTS: ScanFlags, ScanDeps { fsRead, env, prompt, recentStore?, logger?, buildSnapshot }.
+// CRITICAL: Pure orchestration use-case; reads no files beyond directory verification and project markers.
+
 import type { EnvSnapshot, HostContext, WorkspaceRef } from '../contracts/index.js';
 import type { FsRead, Env, Prompt, RecentStore, Logger } from '../ports/index.js';
 import { classifyHost } from '../core/env/index.js';
@@ -46,3 +50,4 @@ export async function runScanPhase1(
     workspaceRef: consentRef
   };
 }
+

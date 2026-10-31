@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+// ROLE: CLI composition root that instantiates concrete infra adapters and passes them to the CLI program.
+// INPUTS: Process arguments process.argv: string[].
+// CRITICAL: Only file in the repository permitted to import directly from src/infra.
 import { NodeEnv, NodeFsRead, ReadlinePrompt, JsonRecentStore, ConsoleLogger, buildEnvSnapshot } from './infra/index.js';
 import { createCli } from './cli/index.js';
 

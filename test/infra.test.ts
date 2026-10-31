@@ -1,3 +1,7 @@
+// ROLE: Tests concrete infrastructure adapters including allowlist env filtering and recent store.
+// INPUTS: Real filesystem temporary folders and mocked process environments.
+// CRITICAL: Proves non-allowlisted environment variables are stripped and user configs persist globally.
+
 import { describe, it, expect, vi } from 'vitest';
 import path from 'node:path';
 import fs from 'node:fs/promises';
@@ -108,3 +112,4 @@ describe('src/infra', () => {
     });
   });
 });
+

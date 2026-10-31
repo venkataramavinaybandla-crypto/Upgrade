@@ -1,3 +1,7 @@
+// ROLE: Implements Logger port routing informational and warning messages to standard output and error.
+// INPUTS: Message strings.
+// CRITICAL: Respects debugMode flag to keep terminal output clean and predictable.
+
 import type { Logger } from '../ports/index.js';
 
 export class ConsoleLogger implements Logger {
@@ -25,3 +29,4 @@ export class ConsoleLogger implements Logger {
     }
   }
 }
+

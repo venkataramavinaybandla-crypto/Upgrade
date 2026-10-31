@@ -1,3 +1,7 @@
+// ROLE: Implements Env port using Node process and builds sanitized EnvSnapshot with allowlisted values only.
+// INPUTS: Node process environment variables.
+// CRITICAL: Values extracted ONLY for TERM_PROGRAM, TERMINAL_EMULATOR, WT_SESSION, TERM; secrets never exposed.
+
 import os from 'node:os';
 import fs from 'node:fs';
 import type { Env } from '../ports/index.js';
@@ -76,3 +80,4 @@ export function buildEnvSnapshot(envPort: Env = new NodeEnv()): EnvSnapshot {
     cwd
   };
 }
+

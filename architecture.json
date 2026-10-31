@@ -6,12 +6,16 @@
     "updated": "2026-10-31",
     "note": "Source of truth for boundaries. TypeScript types and Zod schemas in src/contracts must match this file. Change a contract only via the 'change a contract' workflow."
   },
-
   "runtime": {
-    "status": "PROPOSED, pending user confirmation (see memory.md D-013)",
+    "status": "decided (see memory.md D-013)",
     "language": "TypeScript (strict)",
     "platform": "Node.js >= 20, ESM",
-    "targets": ["Windows (cmd, PowerShell, Windows Terminal)", "WSL2 Ubuntu", "macOS", "Linux"],
+    "targets": [
+      "Windows (cmd, PowerShell, Windows Terminal)",
+      "WSL2 Ubuntu",
+      "macOS",
+      "Linux"
+    ],
     "cliRouting": "commander",
     "prompts": "@clack/prompts",
     "parsing": "web-tree-sitter (WASM, no node-gyp)",
@@ -21,122 +25,273 @@
     "network": "none at runtime",
     "ai": "none"
   },
-
+  "conventions": {
+    "fileHeader": {
+      "format": [
+        "// ROLE: what this file does and what it returns (one line)",
+        "// INPUTS: what it takes, with types or shapes (one line)",
+        "// CRITICAL: the invariant or risk that must not be broken (one line)"
+      ],
+      "maxLineLength": 140,
+      "coveredGlobs": [
+        "src/**/*.{ts,mjs,js,cjs}",
+        "test/**/*.{ts,mjs,js,cjs} (excluding test/fixtures/** and test/golden/**)",
+        "scripts/**/*.{ts,mjs,js,cjs}",
+        "*.{ts,mjs,js,cjs}"
+      ],
+      "checkerScript": "scripts/check-headers.mjs"
+    }
+  },
   "layers": [
-    { "id": "contracts", "path": "src/contracts", "mayImport": [] },
-    { "id": "ports", "path": "src/ports", "mayImport": ["contracts"] },
-    { "id": "core", "path": "src/core", "mayImport": ["contracts", "ports"] },
-    { "id": "extractors", "path": "src/extractors", "mayImport": ["contracts", "ports"] },
-    { "id": "templates", "path": "src/templates", "mayImport": ["contracts", "ports"] },
-    { "id": "infra", "path": "src/infra", "mayImport": ["contracts", "ports"] },
-    { "id": "app", "path": "src/app", "mayImport": ["contracts", "ports", "core", "extractors", "templates"] },
-    { "id": "cli", "path": "src/cli", "mayImport": ["contracts", "app"] }
+    {
+      "id": "contracts",
+      "path": "src/contracts",
+      "mayImport": []
+    },
+    {
+      "id": "ports",
+      "path": "src/ports",
+      "mayImport": [
+        "contracts"
+      ]
+    },
+    {
+      "id": "core",
+      "path": "src/core",
+      "mayImport": [
+        "contracts",
+        "ports"
+      ]
+    },
+    {
+      "id": "extractors",
+      "path": "src/extractors",
+      "mayImport": [
+        "contracts",
+        "ports"
+      ]
+    },
+    {
+      "id": "templates",
+      "path": "src/templates",
+      "mayImport": [
+        "contracts",
+        "ports"
+      ]
+    },
+    {
+      "id": "infra",
+      "path": "src/infra",
+      "mayImport": [
+        "contracts",
+        "ports"
+      ]
+    },
+    {
+      "id": "app",
+      "path": "src/app",
+      "mayImport": [
+        "contracts",
+        "ports",
+        "core",
+        "extractors",
+        "templates"
+      ]
+    },
+    {
+      "id": "cli",
+      "path": "src/cli",
+      "mayImport": [
+        "contracts",
+        "app"
+      ]
+    }
   ],
-
   "composition": {
     "wiringPoint": "src/main.ts",
     "rule": "Only main.ts may import infra and hand real port implementations to app. Everything else receives ports as arguments."
   },
-
   "ports": {
-    "FsRead": ["readText(path)", "exists(path)", "listDir(path)", "stat(path)", "realpath(path)"],
-    "FsWrite": ["writeText(path, content)", "copy(from, to)", "remove(path)", "mkdirp(path)"],
-    "Env": ["get(name)", "names()", "platform()", "cwd()", "homedir()", "isTty()"],
-    "Clock": ["now()"],
-    "Prompt": ["confirm(msg)", "select(msg, options)", "text(msg, opts)", "pickFolder(startAt)"],
-    "Logger": ["info(msg)", "warn(msg)", "error(msg)", "debug(msg)"],
-    "Random": ["pick(list)", "int(max)"],
-    "RecentStore": ["getRecent()", "addRecent(path)"]
+    "FsRead": [
+      "readText(path)",
+      "exists(path)",
+      "listDir(path)",
+      "stat(path)",
+      "realpath(path)"
+    ],
+    "FsWrite": [
+      "writeText(path, content)",
+      "copy(from, to)",
+      "remove(path)",
+      "mkdirp(path)"
+    ],
+    "Env": [
+      "get(name)",
+      "names()",
+      "platform()",
+      "cwd()",
+      "homedir()",
+      "isTty()"
+    ],
+    "Clock": [
+      "now()"
+    ],
+    "Prompt": [
+      "confirm(msg)",
+      "select(msg, options)",
+      "text(msg, opts)",
+      "pickFolder(startAt)"
+    ],
+    "Logger": [
+      "info(msg)",
+      "warn(msg)",
+      "error(msg)",
+      "debug(msg)"
+    ],
+    "Random": [
+      "pick(list)",
+      "int(max)"
+    ],
+    "RecentStore": [
+      "getRecent()",
+      "addRecent(path)"
+    ]
   },
-
   "modules": [
     {
-      "id": "env", "layer": "core", "phase": 1,
+      "id": "env",
+      "layer": "core",
+      "phase": 1,
       "job": "Classify the terminal host from an env map. Pure function.",
-      "in": "EnvSnapshot", "out": "HostContext",
+      "in": "EnvSnapshot",
+      "out": "HostContext",
       "extensionPoint": "host rule registry (one rule per host)"
     },
     {
-      "id": "workspace", "layer": "core", "phase": 1,
+      "id": "workspace",
+      "layer": "core",
+      "phase": 1,
       "job": "Resolve folder, run safety guards, enforce path jail.",
-      "in": "HostContext + candidate path", "out": "WorkspaceRef"
+      "in": "HostContext + candidate path",
+      "out": "WorkspaceRef"
     },
     {
-      "id": "consent", "layer": "app", "phase": 1,
+      "id": "consent",
+      "layer": "app",
+      "phase": 1,
       "job": "Ask permission before any read. Honors --yes.",
-      "in": "WorkspaceRef", "out": "WorkspaceRef (consentGranted)"
+      "in": "WorkspaceRef",
+      "out": "WorkspaceRef (consentGranted)"
     },
     {
-      "id": "scan", "layer": "core", "phase": 2,
+      "id": "scan",
+      "layer": "core",
+      "phase": 2,
       "job": "Inventory files with ignore rules, limits, and secret skipping.",
-      "in": "WorkspaceRef", "out": "ScanReport"
+      "in": "WorkspaceRef",
+      "out": "ScanReport"
     },
     {
-      "id": "trace", "layer": "core", "phase": 2,
+      "id": "trace",
+      "layer": "core",
+      "phase": 2,
       "job": "Score frontend traces.",
-      "in": "ScanReport", "out": "FrontendTraceReport",
+      "in": "ScanReport",
+      "out": "FrontendTraceReport",
       "extensionPoint": "trace rule registry"
     },
     {
-      "id": "fingerprint", "layer": "core", "phase": 3,
+      "id": "fingerprint",
+      "layer": "core",
+      "phase": 3,
       "job": "Rank stack candidates with evidence.",
-      "in": "ScanReport", "out": "StackFingerprint",
+      "in": "ScanReport",
+      "out": "StackFingerprint",
       "extensionPoint": "fingerprint rule per stack"
     },
     {
-      "id": "extractors", "layer": "extractors", "phase": 3,
+      "id": "extractors",
+      "layer": "extractors",
+      "phase": 3,
       "job": "Convert one stack's source into UI-IR.",
-      "in": "WorkspaceRef + StackFingerprint", "out": "UIIR",
+      "in": "WorkspaceRef + StackFingerprint",
+      "out": "UIIR",
       "extensionPoint": "src/extractors/<stackId>/ + one registry line"
     },
     {
-      "id": "ir", "layer": "core", "phase": 3,
+      "id": "ir",
+      "layer": "core",
+      "phase": 3,
       "job": "Validate, normalize, hash UI-IR.",
-      "in": "UIIR", "out": "UIIR (validated) + irHash"
+      "in": "UIIR",
+      "out": "UIIR (validated) + irHash"
     },
     {
-      "id": "readiness", "layer": "core", "phase": 4,
+      "id": "readiness",
+      "layer": "core",
+      "phase": 4,
       "job": "Run readiness checks.",
-      "in": "ScanReport + UIIR", "out": "ReadinessReport",
+      "in": "ScanReport + UIIR",
+      "out": "ReadinessReport",
       "extensionPoint": "readiness check registry"
     },
     {
-      "id": "session", "layer": "core", "phase": 5,
+      "id": "session",
+      "layer": "core",
+      "phase": 5,
       "job": "Token, journal, backups, undo, history.",
-      "in": "write plan", "out": "SessionManifest"
+      "in": "write plan",
+      "out": "SessionManifest"
     },
     {
-      "id": "sync", "layer": "core", "phase": 6,
+      "id": "sync",
+      "layer": "core",
+      "phase": 6,
       "job": "Diff two UI-IR snapshots, detect renames, protect user edits.",
-      "in": "UIIR old + UIIR new + SessionManifest", "out": "SyncDiff"
+      "in": "UIIR old + UIIR new + SessionManifest",
+      "out": "SyncDiff"
     },
     {
-      "id": "match", "layer": "core", "phase": 7,
+      "id": "match",
+      "layer": "core",
+      "phase": 7,
       "job": "Score templates against the UI-IR with deterministic rules.",
-      "in": "UIIR + TemplateManifest[]", "out": "TemplateRecommendation[]"
+      "in": "UIIR + TemplateManifest[]",
+      "out": "TemplateRecommendation[]"
     },
     {
-      "id": "templates", "layer": "templates", "phase": 7,
+      "id": "templates",
+      "layer": "templates",
+      "phase": 7,
       "job": "Load and validate template manifests. No templates ship until Phase 10.",
-      "in": "templates directory", "out": "TemplateManifest[]"
+      "in": "templates directory",
+      "out": "TemplateManifest[]"
     },
     {
-      "id": "cli", "layer": "cli", "phase": 8,
+      "id": "cli",
+      "layer": "cli",
+      "phase": 8,
       "job": "Terminal experience, copy text, rendering.",
-      "in": "use-case results", "out": "terminal output"
+      "in": "use-case results",
+      "out": "terminal output"
     },
     {
-      "id": "generate", "layer": "core", "phase": 9,
+      "id": "generate",
+      "layer": "core",
+      "phase": 9,
       "job": "Turn template + UI-IR into a file plan, then journaled writes.",
-      "in": "TemplateManifest + UIIR", "out": "FilePlan"
+      "in": "TemplateManifest + UIIR",
+      "out": "FilePlan"
     },
     {
-      "id": "preview", "layer": "infra", "phase": 9,
+      "id": "preview",
+      "layer": "infra",
+      "phase": 9,
       "job": "Render in a temp dir with mock data from the IR and bundled sample images. Never touches the workspace.",
-      "in": "TemplateManifest + UIIR", "out": "local preview URL"
+      "in": "TemplateManifest + UIIR",
+      "out": "local preview URL"
     }
   ],
-
   "contracts": {
     "EnvSnapshot": {
       "names": "string[] (variable NAMES only)",
@@ -245,33 +400,101 @@
       "affectedFiles": "Array<{ path: string, state: regenerate | conflict | skip-custom }>"
     }
   },
-
   "config": {
     "scan": {
-      "ignoredDirs": ["node_modules", ".git", ".venv", "venv", "env", "__pycache__", "dist", "build", ".next", ".cache", ".upgrade", "coverage", ".idea", ".vscode", "target"],
-      "secretNeverRead": [".env", ".env.*", "*.pem", "*.key", "*.p12", "id_rsa*", "credentials*", "secrets*"],
+      "ignoredDirs": [
+        "node_modules",
+        ".git",
+        ".venv",
+        "venv",
+        "env",
+        "__pycache__",
+        "dist",
+        "build",
+        ".next",
+        ".cache",
+        ".upgrade",
+        "coverage",
+        ".idea",
+        ".vscode",
+        "target"
+      ],
+      "secretNeverRead": [
+        ".env",
+        ".env.*",
+        "*.pem",
+        "*.key",
+        "*.p12",
+        "id_rsa*",
+        "credentials*",
+        "secrets*"
+      ],
       "maxFiles": 20000,
       "maxFileBytes": 1048576,
       "maxDepth": 12,
       "emptyMeans": "no files outside ignoredDirs and secretNeverRead"
     },
     "workspaceGuards": {
-      "refuse": ["filesystem root", "drive root", "home directory itself", "OS directories (C:\\Windows, C:\\Program Files, /usr, /etc, /bin, /var, /System)", "Desktop, Documents, Downloads folders themselves (projects inside them are fine)"],
-      "projectMarkers": ["package.json", "requirements.txt", "pyproject.toml", "Pipfile", ".git", "go.mod", "pom.xml", "composer.json", "schema.prisma", "Cargo.toml"],
+      "refuse": [
+        "filesystem root",
+        "drive root",
+        "home directory itself",
+        "OS directories (C:\\Windows, C:\\Program Files, /usr, /etc, /bin, /var, /System)",
+        "Desktop, Documents, Downloads folders themselves (projects inside them are fine)"
+      ],
+      "projectMarkers": [
+        "package.json",
+        "requirements.txt",
+        "pyproject.toml",
+        "Pipfile",
+        ".git",
+        "go.mod",
+        "pom.xml",
+        "composer.json",
+        "schema.prisma",
+        "Cargo.toml"
+      ],
       "writeJail": "Every write path is realpath-resolved and must start with workspace root. Symlinks that escape the root are refused.",
       "wslNote": "Warn when the workspace is under /mnt/<drive> (slow filesystem)."
     },
     "hostDetection": {
-      "priority": ["cursor", "windsurf", "antigravity", "jetbrains", "zed", "vscode", "windows-terminal", "fallback-plain"],
+      "priority": [
+        "cursor",
+        "windsurf",
+        "antigravity",
+        "jetbrains",
+        "zed",
+        "vscode",
+        "windows-terminal",
+        "fallback-plain"
+      ],
       "rules": {
-        "cursor": ["CURSOR_TRACE_ID"],
-        "windsurf": ["CODEIUM_EDITOR_APP_ROOT"],
-        "antigravity": ["ANTIGRAVITY_AGENT (community-reported, UNVERIFIED)", "TERM_PROGRAM=vscode plus VSCODE_* (if Antigravity inherits VS Code, UNVERIFIED)"],
-        "jetbrains": ["TERMINAL_EMULATOR=JetBrains-JediTerm (UNVERIFIED on this machine)"],
-        "zed": ["TERM_PROGRAM=zed"],
-        "vscode": ["TERM_PROGRAM=vscode", "VSCODE_PID"],
-        "windows-terminal": ["WT_SESSION"],
-        "non-interactive": ["isTty=false"]
+        "cursor": [
+          "CURSOR_TRACE_ID"
+        ],
+        "windsurf": [
+          "CODEIUM_EDITOR_APP_ROOT"
+        ],
+        "antigravity": [
+          "ANTIGRAVITY_AGENT (community-reported, UNVERIFIED)",
+          "TERM_PROGRAM=vscode plus VSCODE_* (if Antigravity inherits VS Code, UNVERIFIED)"
+        ],
+        "jetbrains": [
+          "TERMINAL_EMULATOR=JetBrains-JediTerm (UNVERIFIED on this machine)"
+        ],
+        "zed": [
+          "TERM_PROGRAM=zed"
+        ],
+        "vscode": [
+          "TERM_PROGRAM=vscode",
+          "VSCODE_PID"
+        ],
+        "windows-terminal": [
+          "WT_SESSION"
+        ],
+        "non-interactive": [
+          "isTty=false"
+        ]
       },
       "behavior": {
         "ide-terminal": "Use cwd as workspace after showing 'Working in <path>. Right folder?' and running safety guards.",
@@ -282,21 +505,69 @@
       "caveat": "Env vars can leak into child terminals (a plain terminal started from an IDE). Detection is a heuristic, so the workspace confirmation and safety guards run in every mode."
     },
     "frontendTrace": {
-      "thresholds": { "blocked": 5, "suspect": 2, "clean": 0 },
+      "thresholds": {
+        "blocked": 5,
+        "suspect": 2,
+        "clean": 0
+      },
       "suspectBehavior": "Warn, show hits, ask the user to confirm these are not a frontend.",
       "blockedBehavior": "Refuse. Tell the user to remove the frontend and retry.",
       "rules": [
-        { "id": "dep-frontend-framework", "weight": 5, "match": "package.json deps include react, react-dom, vue, svelte, @angular/core, next, nuxt, vite, astro, solid-js" },
-        { "id": "file-app-entry", "weight": 5, "match": "src/App.{jsx,tsx,js,ts}" },
-        { "id": "root-index-html-script", "weight": 5, "match": "root index.html containing a script tag" },
-        { "id": "component-files", "weight": 5, "match": "any *.vue or *.svelte file" },
-        { "id": "tailwind-config", "weight": 3, "match": "tailwind.config.* or postcss.config.*" },
-        { "id": "pages-dir", "weight": 3, "match": "pages/ or app/ containing page.* files" },
-        { "id": "components-dir", "weight": 3, "match": "src/components with .jsx or .tsx" },
-        { "id": "static-dir", "weight": 1, "match": "public/ or static/" },
-        { "id": "templates-dir", "weight": 1, "match": "templates/ (Flask, Django)" },
-        { "id": "html-files", "weight": 1, "match": "any *.html file outside ignored dirs" },
-        { "id": "css-files", "weight": 1, "match": "any *.css file outside ignored dirs" }
+        {
+          "id": "dep-frontend-framework",
+          "weight": 5,
+          "match": "package.json deps include react, react-dom, vue, svelte, @angular/core, next, nuxt, vite, astro, solid-js"
+        },
+        {
+          "id": "file-app-entry",
+          "weight": 5,
+          "match": "src/App.{jsx,tsx,js,ts}"
+        },
+        {
+          "id": "root-index-html-script",
+          "weight": 5,
+          "match": "root index.html containing a script tag"
+        },
+        {
+          "id": "component-files",
+          "weight": 5,
+          "match": "any *.vue or *.svelte file"
+        },
+        {
+          "id": "tailwind-config",
+          "weight": 3,
+          "match": "tailwind.config.* or postcss.config.*"
+        },
+        {
+          "id": "pages-dir",
+          "weight": 3,
+          "match": "pages/ or app/ containing page.* files"
+        },
+        {
+          "id": "components-dir",
+          "weight": 3,
+          "match": "src/components with .jsx or .tsx"
+        },
+        {
+          "id": "static-dir",
+          "weight": 1,
+          "match": "public/ or static/"
+        },
+        {
+          "id": "templates-dir",
+          "weight": 1,
+          "match": "templates/ (Flask, Django)"
+        },
+        {
+          "id": "html-files",
+          "weight": 1,
+          "match": "any *.html file outside ignored dirs"
+        },
+        {
+          "id": "css-files",
+          "weight": 1,
+          "match": "any *.css file outside ignored dirs"
+        }
       ]
     },
     "readiness": {
@@ -307,15 +578,25 @@
         "models-have-fields",
         "dependencies-declared"
       ],
-      "warnings": ["boot-test-skipped", "no-auth-detected", "very-few-entities"],
-      "optional": ["boot-test: start server, hit health route or /openapi.json"],
+      "warnings": [
+        "boot-test-skipped",
+        "no-auth-detected",
+        "very-few-entities"
+      ],
+      "optional": [
+        "boot-test: start server, hit health route or /openapi.json"
+      ],
       "finalStep": "Human confirm: 'Is this backend finished? [Y/N]'"
     },
     "sessions": {
       "tokenFormat": "<word>-<word>-<4 digits>, e.g. carbon-otter-4821",
       "uniqueness": "Generate, check .upgrade/sessions/<token> does not exist, retry up to 20 times.",
       "undoRule": "Snapshot before write. Created files are deleted on undo. Modified files are restored from backup. If current hash differs from hashAfter, ask before touching that file.",
-      "statuses": ["active", "undone", "finalized"],
+      "statuses": [
+        "active",
+        "undone",
+        "finalized"
+      ],
       "crashSafety": "Journal entry is written BEFORE the file operation. Undo can always replay the journal backwards."
     },
     "syncDefaults": {
@@ -326,19 +607,55 @@
       "editedGeneratedFile": "Write <file>.upgrade-new beside it, show a diff, never overwrite."
     }
   },
-
   "cli": {
     "commands": [
-      { "name": "upgrade", "does": "Interactive full flow" },
-      { "name": "upgrade scan", "does": "Host check, consent, scan, trace, fingerprint, readiness. Writes nothing." },
-      { "name": "upgrade apply", "options": ["--template <id>"], "does": "Create a session and generate" },
-      { "name": "upgrade sync", "does": "Diff against last IR snapshot and regenerate affected files" },
-      { "name": "upgrade history", "does": "List sessions" },
-      { "name": "upgrade open <token>", "does": "Show one session and its undo option" },
-      { "name": "upgrade undo [token]", "does": "Undo an active session" },
-      { "name": "upgrade doctor", "options": ["--env"], "does": "Print detected host and matched env var NAMES, for verifying detection" }
+      {
+        "name": "upgrade",
+        "does": "Interactive full flow"
+      },
+      {
+        "name": "upgrade scan",
+        "does": "Host check, consent, scan, trace, fingerprint, readiness. Writes nothing."
+      },
+      {
+        "name": "upgrade apply",
+        "options": [
+          "--template <id>"
+        ],
+        "does": "Create a session and generate"
+      },
+      {
+        "name": "upgrade sync",
+        "does": "Diff against last IR snapshot and regenerate affected files"
+      },
+      {
+        "name": "upgrade history",
+        "does": "List sessions"
+      },
+      {
+        "name": "upgrade open <token>",
+        "does": "Show one session and its undo option"
+      },
+      {
+        "name": "upgrade undo [token]",
+        "does": "Undo an active session"
+      },
+      {
+        "name": "upgrade doctor",
+        "options": [
+          "--env"
+        ],
+        "does": "Print detected host and matched env var NAMES, for verifying detection"
+      }
     ],
-    "globalFlags": ["--dir <path>", "--yes", "--json", "--no-color", "--dry-run", "--debug"],
+    "globalFlags": [
+      "--dir <path>",
+      "--yes",
+      "--json",
+      "--no-color",
+      "--dry-run",
+      "--debug"
+    ],
     "exitCodes": {
       "0": "ok",
       "1": "unexpected error",
@@ -357,64 +674,198 @@
       "location": "All user-facing strings live in src/cli/copy.ts so tone is editable in one place."
     }
   },
-
   "phases": [
     {
-      "id": 0, "name": "Foundation and contracts", "track": "backend", "status": "done",
-      "deliver": ["repo scaffold", "strict tsconfig", "lint + test runner", "layer folders", "contracts v1 (types + Zod)", "port interfaces", "boundary checker", "fixtures folder", "single check script"],
-      "exit": ["check script green on skeleton", "contracts compile and validate sample objects", "an illegal import (core -> infra) fails the boundary check"]
+      "id": 0,
+      "name": "Foundation and contracts",
+      "track": "backend",
+      "status": "done",
+      "deliver": [
+        "repo scaffold",
+        "strict tsconfig",
+        "lint + test runner",
+        "layer folders",
+        "contracts v1 (types + Zod)",
+        "port interfaces",
+        "boundary checker",
+        "fixtures folder",
+        "single check script"
+      ],
+      "exit": [
+        "check script green on skeleton",
+        "contracts compile and validate sample objects",
+        "an illegal import (core -> infra) fails the boundary check"
+      ]
     },
     {
-      "id": 1, "name": "Host and workspace gate", "track": "backend", "status": "done",
-      "deliver": ["env classifier", "doctor --env", "workspace resolver + guards + jail", "folder picker (plain prompt)", "recent.json", "consent gate"],
-      "exit": ["table-driven tests over env maps for every host", "plain terminal asks for a folder, never scans cwd", "IDE terminal confirms workspace", "refused folders are never read"]
+      "id": 1,
+      "name": "Host and workspace gate",
+      "track": "backend",
+      "status": "done",
+      "deliver": [
+        "env classifier",
+        "doctor --env",
+        "workspace resolver + guards + jail",
+        "folder picker (plain prompt)",
+        "recent.json",
+        "consent gate"
+      ],
+      "exit": [
+        "table-driven tests over env maps for every host",
+        "plain terminal asks for a folder, never scans cwd",
+        "IDE terminal confirms workspace",
+        "refused folders are never read"
+      ]
     },
     {
-      "id": 2, "name": "Scan and classify", "track": "backend", "status": "not-started",
-      "deliver": ["scanner", "secret skipping", "empty verdict", "trace scoring"],
-      "exit": ["fixtures: empty, clean-backend, react-mixed, flask-templates produce expected verdicts", "secret files are never opened (asserted by a fake FsRead)"]
+      "id": 2,
+      "name": "Scan and classify",
+      "track": "backend",
+      "status": "not-started",
+      "deliver": [
+        "scanner",
+        "secret skipping",
+        "empty verdict",
+        "trace scoring"
+      ],
+      "exit": [
+        "fixtures: empty, clean-backend, react-mixed, flask-templates produce expected verdicts",
+        "secret files are never opened (asserted by a fake FsRead)"
+      ]
     },
     {
-      "id": 3, "name": "Fingerprint, first extractor, UI-IR", "track": "backend", "status": "blocked-on-Q-001",
-      "deliver": ["fingerprint engine", "extractor interface", "extractor #1", "IR validation + hash", "golden IR files"],
-      "exit": ["fixture backend -> golden IR matches byte for byte", "unknown stack -> status unknown with reasons", "adding a second extractor touches no existing module"]
+      "id": 3,
+      "name": "Fingerprint, first extractor, UI-IR",
+      "track": "backend",
+      "status": "blocked-on-Q-001",
+      "deliver": [
+        "fingerprint engine",
+        "extractor interface",
+        "extractor #1",
+        "IR validation + hash",
+        "golden IR files"
+      ],
+      "exit": [
+        "fixture backend -> golden IR matches byte for byte",
+        "unknown stack -> status unknown with reasons",
+        "adding a second extractor touches no existing module"
+      ]
     },
     {
-      "id": 4, "name": "Readiness gate", "track": "backend", "status": "not-started",
-      "deliver": ["check registry", "blocker and warning checks", "optional boot test", "human confirm"],
-      "exit": ["half-built fixtures fail with the exact failing check named", "finished fixtures pass"]
+      "id": 4,
+      "name": "Readiness gate",
+      "track": "backend",
+      "status": "not-started",
+      "deliver": [
+        "check registry",
+        "blocker and warning checks",
+        "optional boot test",
+        "human confirm"
+      ],
+      "exit": [
+        "half-built fixtures fail with the exact failing check named",
+        "finished fixtures pass"
+      ]
     },
     {
-      "id": 5, "name": "Session engine", "track": "backend", "status": "not-started",
-      "deliver": ["token generator", "journal", "backup", "manifest", "undo with hash check", "history and open"],
-      "exit": ["kill the process after N writes, undo restores the clean state", "edited generated file triggers the confirm path", "tokens never collide in a 10k-run test"]
+      "id": 5,
+      "name": "Session engine",
+      "track": "backend",
+      "status": "not-started",
+      "deliver": [
+        "token generator",
+        "journal",
+        "backup",
+        "manifest",
+        "undo with hash check",
+        "history and open"
+      ],
+      "exit": [
+        "kill the process after N writes, undo restores the clean state",
+        "edited generated file triggers the confirm path",
+        "tokens never collide in a 10k-run test"
+      ]
     },
     {
-      "id": 6, "name": "Snapshot and sync", "track": "backend", "status": "not-started",
-      "deliver": ["IR snapshot per session", "differ", "rename candidates", "zone ownership", "conflict files"],
-      "exit": ["add/remove/change entity, field, route fixtures produce the expected SyncDiff", "custom/ is never in affectedFiles"]
+      "id": 6,
+      "name": "Snapshot and sync",
+      "track": "backend",
+      "status": "not-started",
+      "deliver": [
+        "IR snapshot per session",
+        "differ",
+        "rename candidates",
+        "zone ownership",
+        "conflict files"
+      ],
+      "exit": [
+        "add/remove/change entity, field, route fixtures produce the expected SyncDiff",
+        "custom/ is never in affectedFiles"
+      ]
     },
     {
-      "id": 7, "name": "Template contract and matcher", "track": "backend", "status": "not-started",
-      "deliver": ["manifest schema", "registry loader", "slot matcher", "recommendation reasons"],
-      "exit": ["dummy templates rank deterministically for fixture IRs", "invalid manifest is rejected with a readable error"]
+      "id": 7,
+      "name": "Template contract and matcher",
+      "track": "backend",
+      "status": "not-started",
+      "deliver": [
+        "manifest schema",
+        "registry loader",
+        "slot matcher",
+        "recommendation reasons"
+      ],
+      "exit": [
+        "dummy templates rank deterministically for fixture IRs",
+        "invalid manifest is rejected with a readable error"
+      ]
     },
     {
-      "id": 8, "name": "CLI experience and styling", "track": "terminal-frontend", "status": "not-started",
+      "id": 8,
+      "name": "CLI experience and styling",
+      "track": "terminal-frontend",
+      "status": "not-started",
       "note": "A minimal unstyled CLI shell exists from Phase 1 so the folder prompt works. This phase replaces it with the styled version.",
-      "deliver": ["clack flow", "theme and copy.ts", "spinners and progress", "gallery rendering", "--json and --no-color", "non-interactive mode"],
-      "exit": ["every use-case result renders in interactive, --json, and non-interactive modes", "no logic in src/cli (boundary check)"]
+      "deliver": [
+        "clack flow",
+        "theme and copy.ts",
+        "spinners and progress",
+        "gallery rendering",
+        "--json and --no-color",
+        "non-interactive mode"
+      ],
+      "exit": [
+        "every use-case result renders in interactive, --json, and non-interactive modes",
+        "no logic in src/cli (boundary check)"
+      ]
     },
     {
-      "id": 9, "name": "Generator and preview", "track": "backend", "status": "blocked-on-templates",
-      "deliver": ["file plan", "journaled writer", "preview server with mock data"],
-      "exit": ["generated project builds", "undo removes every generated file"]
+      "id": 9,
+      "name": "Generator and preview",
+      "track": "backend",
+      "status": "blocked-on-templates",
+      "deliver": [
+        "file plan",
+        "journaled writer",
+        "preview server with mock data"
+      ],
+      "exit": [
+        "generated project builds",
+        "undo removes every generated file"
+      ]
     },
     {
-      "id": 10, "name": "Template crafting", "track": "design", "status": "not-started",
+      "id": 10,
+      "name": "Template crafting",
+      "track": "design",
+      "status": "not-started",
       "note": "Templates are built to the slot contract from Phase 7, named like Carbon and Afrind, grouped by category.",
-      "deliver": ["first templates", "palette and styling metadata"],
-      "exit": ["each template renders from at least two different fixture IRs"]
+      "deliver": [
+        "first templates",
+        "palette and styling metadata"
+      ],
+      "exit": [
+        "each template renders from at least two different fixture IRs"
+      ]
     }
   ]
 }

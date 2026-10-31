@@ -1,3 +1,7 @@
+// ROLE: Classifies the terminal host from an env snapshot and returns a HostContext (pure, no side effects).
+// INPUTS: EnvSnapshot { names, values, platform, isWsl, isTty, cwd }.
+// CRITICAL: signals hold variable NAMES only, never values; Antigravity is checked before generic VS Code.
+
 import type { EnvSnapshot, HostContext } from '../../contracts/index.js';
 import { HOST_RULES_REGISTRY } from './rules/index.js';
 import type { HostRuleResult } from './rules/types.js';
@@ -34,3 +38,4 @@ export function classifyHost(snapshot: EnvSnapshot): HostContext {
     cwd: snapshot.cwd
   };
 }
+

@@ -31,5 +31,16 @@
 
 ---
 
+## Housekeeping: Header Convention & Doc Alignment
+- **Status**: Completed
+- **Deliverables**:
+  - Three-line file header convention (`ROLE`, `INPUTS`, `CRITICAL`, max 140 chars) across all code files in `src/`, `scripts/`, `test/`.
+  - Header validator: `scripts/check-headers.mjs` and test suite `test/headers.test.ts`.
+  - Integrated into `npm run check`.
+  - Logged decisions D-019, D-020, marked D-013, Q-005, Q-006 resolved, added Q-008 in `memory.md`.
+  - Updated `architecture.json` and `workflows.md`.
+
+---
+
 ## Phase 2: Scan and Classify
 - **Status**: Not started (next)

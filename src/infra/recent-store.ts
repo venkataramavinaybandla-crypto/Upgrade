@@ -1,3 +1,7 @@
+// ROLE: Implements RecentStore persisting MRU workspace folders in a user-level configuration directory.
+// INPUTS: Workspace paths: string.
+// CRITICAL: Writes to user-level config (APPDATA / XDG / home), NEVER inside any project or repo.
+
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
@@ -58,3 +62,4 @@ export class JsonRecentStore implements RecentStore {
     }
   }
 }
+

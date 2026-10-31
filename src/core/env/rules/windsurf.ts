@@ -1,3 +1,7 @@
+// ROLE: Evaluates presence of Windsurf IDE terminal environment markers.
+// INPUTS: EnvSnapshot { names, values, platform, isWsl, isTty, cwd }.
+// CRITICAL: Checks CODEIUM_EDITOR_APP_ROOT; signals array must record variable names only, never values.
+
 import type { EnvSnapshot } from '../../../contracts/index.js';
 import type { HostRule, HostRuleResult } from './types.js';
 
@@ -24,3 +28,4 @@ export const windsurfRule: HostRule = {
     return null;
   }
 };
+

@@ -1,3 +1,7 @@
+// ROLE: Resolves target workspace folder across IDE terminals, plain terminals, and non-interactive runs.
+// INPUTS: HostContext, ResolveWorkspaceFlags { dir?, yes? }, ResolveWorkspaceDeps { fsRead, env, prompt, recentStore? }.
+// CRITICAL: Plain terminals must never scan cwd by default; non-interactive requires --dir and --yes.
+
 import type { HostContext, WorkspaceRef } from '../contracts/index.js';
 import type { FsRead, Env, Prompt, RecentStore, Logger } from '../ports/index.js';
 import { validateWorkspace } from '../core/workspace/index.js';
@@ -125,3 +129,4 @@ export async function resolveWorkspace(
   }
   return result;
 }
+

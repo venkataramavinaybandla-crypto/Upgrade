@@ -1,3 +1,7 @@
+// ROLE: Detects fallback shells (PowerShell, CMD, Bash, Zsh) when no IDE environment is matched.
+// INPUTS: EnvSnapshot { names, values, platform, isWsl, isTty, cwd }.
+// CRITICAL: Classifies unadorned terminals as plain-terminal; never defaults to an IDE kind.
+
 import type { EnvSnapshot, HostName } from '../../../contracts/index.js';
 import type { HostRule, HostRuleResult } from './types.js';
 
@@ -59,3 +63,4 @@ export const fallbackPlainRule: HostRule = {
     };
   }
 };
+

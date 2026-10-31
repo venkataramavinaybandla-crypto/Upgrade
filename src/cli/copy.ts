@@ -1,3 +1,7 @@
+// ROLE: Centralizes all user-facing terminal copy, error messages, and refusal explanations.
+// INPUTS: Refusal reasons and interpolated string variables.
+// CRITICAL: Tone must be clear and direct without decorative wavy banners or styling artifacts.
+
 import type { WorkspaceRefusalReason } from '../contracts/index.js';
 
 export const refusalReasonMessages: Record<WorkspaceRefusalReason, string> = {

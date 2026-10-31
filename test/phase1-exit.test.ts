@@ -1,3 +1,7 @@
+// ROLE: End-to-end verification of all Phase 1 exit criteria defined in architecture.json.
+// INPUTS: Mock environments simulating IDE and plain terminals with fake recording FsRead.
+// CRITICAL: Proves refused folders are never opened and plain terminals never scan cwd.
+
 import { describe, it, expect, vi } from 'vitest';
 import { runScanPhase1 } from '../src/app/scan.js';
 import { runDoctorEnv } from '../src/app/doctor.js';
@@ -190,3 +194,4 @@ describe('Phase 1 Exit Criteria Verification', () => {
     expect(openedPaths).toHaveLength(0);
   });
 });
+

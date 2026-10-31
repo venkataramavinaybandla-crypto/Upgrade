@@ -1,3 +1,7 @@
+// ROLE: Declares abstraction interfaces for all system boundary side-effects (filesystem, environment, prompts).
+// INPUTS: Contract types imported from src/contracts.
+// CRITICAL: Side-effects in core and extractors must only execute through these port interfaces.
+
 export interface FileStat {
   isFile(): boolean;
   isDirectory(): boolean;
