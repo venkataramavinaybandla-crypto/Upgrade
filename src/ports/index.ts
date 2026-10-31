@@ -61,3 +61,9 @@ export interface Random {
   pick<T>(list: T[]): T;
   int(max: number): number;
 }
+
+export interface RecentStore {
+  getRecent(): Promise<string[]>;
+  addRecent(path: string): Promise<void>;
+}
+

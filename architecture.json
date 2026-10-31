@@ -45,7 +45,8 @@
     "Clock": ["now()"],
     "Prompt": ["confirm(msg)", "select(msg, options)", "text(msg, opts)", "pickFolder(startAt)"],
     "Logger": ["info(msg)", "warn(msg)", "error(msg)", "debug(msg)"],
-    "Random": ["pick(list)", "int(max)"]
+    "Random": ["pick(list)", "int(max)"],
+    "RecentStore": ["getRecent()", "addRecent(path)"]
   },
 
   "modules": [

@@ -28,6 +28,8 @@ Status values: `decided` (user said so), `proposed` (agent suggestion awaiting t
 | D-016 | 2026-10-31 | Consent before any read. Never read secret files (`.env*`, keys). No network, no telemetry | Trust: user explicitly approves a peek | decided (consent), proposed (rest) |
 | D-017 | 2026-10-31 | Manual `upgrade sync` first. No file watcher in MVP | A watcher fires mid-edit, which is the half-built state D-009 bans | proposed |
 | D-018 | 2026-10-31 | Planning files: `context.md`, `architecture.json`, `memory.md`, `workflows.md` beside the existing `AGENTS.md` | User request | decided |
+| D-019 | 2026-10-31 | In-terminal folder browsing deferred to Phase 8 | Plain-terminal offers recent folders and typed/pasted path in Phase 1 minimal shell | decided |
+| D-020 | 2026-10-31 | User-level storage for recent.json | Recent workspaces are global to the user, not per-project | decided |
 
 ## 2. Research findings (2026-10-31)
 
@@ -73,3 +75,4 @@ Sources are summarized, not quoted. Re-verify anything marked UNVERIFIED before 
 |---|---|
 | 2026-10-31 | Brainstorm completed. Planning files created. Phase 0 not started. |
 | 2026-10-31 | Phase 0 completed: TypeScript scaffold, contracts, ports, boundary checker, test runner, check script. |
+| 2026-10-31 | Corrected context.md runtime layout: recent.json moved from project .upgrade/ to user-level config (D-020). Deferred folder browsing to Phase 8 (D-019). |

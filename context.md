@@ -107,7 +107,11 @@ Inside the user's project (never inside Upgrade's own repo):
     ir.json           UI-IR snapshot for this session
     journal.jsonl     append-only log of every write
     backup/           originals of any modified file
-  recent.json         recently opened workspaces (plain-terminal flow)
+```
+
+User-level configuration (OS-appropriate config directory, e.g. `~/.config/upgrade/recent.json` or `%APPDATA%/upgrade/recent.json`):
+```
+recent.json           recently opened workspaces (plain-terminal flow)
 ```
 
 Generated frontend files carry an ownership marker. `generated/` belongs to Upgrade; `custom/` belongs to the user and is never touched.
