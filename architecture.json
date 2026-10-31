@@ -365,7 +365,7 @@
       "exit": ["check script green on skeleton", "contracts compile and validate sample objects", "an illegal import (core -> infra) fails the boundary check"]
     },
     {
-      "id": 1, "name": "Host and workspace gate", "track": "backend", "status": "in-progress",
+      "id": 1, "name": "Host and workspace gate", "track": "backend", "status": "done",
       "deliver": ["env classifier", "doctor --env", "workspace resolver + guards + jail", "folder picker (plain prompt)", "recent.json", "consent gate"],
       "exit": ["table-driven tests over env maps for every host", "plain terminal asks for a folder, never scans cwd", "IDE terminal confirms workspace", "refused folders are never read"]
     },
