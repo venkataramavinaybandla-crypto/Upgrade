@@ -2,7 +2,7 @@ import type { WorkspaceRef } from '../contracts/index.js';
 import type { Prompt } from '../ports/index.js';
 
 export interface ConsentOptions {
-  yes?: boolean;
+  yes?: boolean | undefined;
 }
 
 export async function askConsent(
