@@ -146,3 +146,14 @@ Applies to frontend-trace rules, readiness checks, and host detection rules.
 
 One command runs everything: headers, type check, boundary check, tests.
 Command: `npm run check` (executes `npm run check:headers && npm run typecheck && npm run check:boundaries && npm run test`).
+
+## 17. Working rules
+
+1. Read narrowly. Build your code map from 3-line headers only: `head -n 3` over src/. Open a full source file only to edit it or depend on its internals. Docs: read workflows.md sections 1, 2, 5 and 17; context.md sections 5 and 6; in architecture.json only phases[id=3], the contracts you touch, and config.fingerprint or config.scan; in memory.md only section 3 (open questions).
+2. Iterate with targeted tests (`npx vitest run <path>`). Run `npm run check` once before each commit and once at the end. Keep command output short (tail, dot reporter).
+3. Edit, do not rewrite. Patch existing files. Create several new files per tool call. Never re-read a file you just wrote.
+4. No narration, no plan restating, brief reasoning. No extra docs, refactors, or files outside scope.
+5. Decide, do not ask. If a choice has a sensible default, take it, log one line in memory.md, continue. STOP only on the listed stop conditions.
+6. Quality is not negotiable: tests, boundary check, and headers all still required. Cut words and re-reading, never verification.
+7. Final report: 15 lines maximum.
+

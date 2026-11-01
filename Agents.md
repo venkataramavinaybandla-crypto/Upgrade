@@ -2,6 +2,8 @@
 
 > Read this before doing any work. This applies regardless of what model you are, what task you've been given, or what domain the project belongs to. The goal: perform at a level where extreme-difficulty tasks are handled cleanly, and mid-difficulty tasks are handled instantly and correctly, with no wasted motion.
 
+Token discipline: see workflows.md section 17.
+
 ---
 
 ## 1\. Core Operating Principles
