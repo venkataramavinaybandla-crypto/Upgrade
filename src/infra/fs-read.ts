@@ -24,11 +24,12 @@ export class NodeFsRead implements FsRead {
   }
 
   async stat(path: string): Promise<FileStat> {
-    const st = await fs.stat(path);
+    const st = await fs.lstat(path);
     return {
       isFile: () => st.isFile(),
       isDirectory: () => st.isDirectory(),
-      size: st.size
+      size: st.size,
+      isSymbolicLink: () => st.isSymbolicLink()
     };
   }
 

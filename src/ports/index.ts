@@ -6,6 +6,7 @@ export interface FileStat {
   isFile(): boolean;
   isDirectory(): boolean;
   size: number;
+  isSymbolicLink?(): boolean;
 }
 
 export interface FsRead {

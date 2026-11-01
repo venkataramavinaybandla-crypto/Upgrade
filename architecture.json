@@ -432,7 +432,7 @@
       "maxFiles": 20000,
       "maxFileBytes": 1048576,
       "maxDepth": 12,
-      "emptyMeans": "no files outside ignoredDirs and secretNeverRead"
+      "emptyMeans": "no files matching CODE_EXTENSIONS or MANIFEST_FILES outside ignoredDirs and secretNeverRead"
     },
     "workspaceGuards": {
       "refuse": [
