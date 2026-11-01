@@ -61,7 +61,7 @@ export interface ScanWorkspaceFlags {
 export interface ScanWorkspaceDeps {
   fs: FsRead;
   prompt: Prompt;
-  logger?: Logger;
+  logger?: Logger | undefined;
 }
 
 export type ScanOutcome = 'empty' | 'blocked' | 'suspect' | 'clean';

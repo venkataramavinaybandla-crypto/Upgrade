@@ -34,6 +34,14 @@ export const copy = {
   projectMarkers: (markers: string[]) => `Project markers: ${markers.length > 0 ? markers.join(', ') : 'none detected'}`,
   consentGranted: 'Consent granted: yes',
   consentDeclined: 'Consent declined. Scanning cancelled.',
+  scanEmpty: "There's ntg here Bruhhh...",
+  scanBlockedHeader: 'Frontend traces found in workspace (refused):',
+  scanTraceHit: (id: string, weight: number, path?: string) =>
+    `  - [${id}] (weight ${weight})${path ? `: ${path}` : ''}`,
+  scanRemoveFrontend: 'Remove the frontend, then run Upgrade again.',
+  scanCleanSummary: (files: number, bytes: number, truncated: boolean, skippedSecrets: number) =>
+    `Backend scanned successfully: ${files} files (${bytes} bytes)${truncated ? ' [TRUNCATED]' : ''}${skippedSecrets > 0 ? `, ${skippedSecrets} secrets skipped` : ''}.`,
+  confirmNotFrontend: 'Confirm these are not a frontend?',
 
   // Errors
   refusalTitle: (reason?: WorkspaceRefusalReason) =>

@@ -43,4 +43,21 @@
 ---
 
 ## Phase 2: Scan and Classify
+- **Status**: Completed
+- **Deliverables**:
+  - **Task 1: Fixtures**: Tiny committed fixture folders under `test/fixtures/` (`empty/`, `docs-only/`, `clean-express/`, `react-mixed/`, `nested-frontend/`, `flask-templates/`, `ignored-noise/`).
+  - **Task 2: `src/core/scan`**: `scan(workspace, deps)` with deterministic POSIX relative paths, ignore directory handling at any depth, secret skipping by name without opening (`secretFilesSkipped`), safety limits (`maxFiles`, `maxDepth`, `maxFileBytes` setting `truncated = true`), symlink avoidance, and manifest/code-extension based `has-code` / `empty` verdict.
+  - **Task 3: `src/core/trace`**: 11 frontend trace rules under `src/core/trace/rules/` (`dep-frontend-framework`, `file-app-entry`, `root-index-html-script`, `component-files`, `tailwind-config`, `pages-dir`, `components-dir`, `static-dir`, `templates-dir`, `html-files`, `css-files`). Sandboxed `createTraceReader` enforcing allowlist (`package.json`, `index.html` at depth <= 2) and secret denylist. `evaluateTrace` pure function calculating score and thresholds (>= 5 blocked, 2-4 suspect, <= 1 clean).
+  - **Task 4: `src/app`**: `scanWorkspace(workspace, flags, deps)` use-case returning `{ scan, trace, outcome }`. Handles suspect traces: interactively prompts confirmation, or treats as blocked with `--yes` or in non-interactive mode (decision D-023).
+  - **Task 5: `src/cli`**: Wired `upgrade scan`: empty prints `There's ntg here Bruhhh...` (exit 12), blocked lists hits with paths and guidance (exit 13), clean displays summary (exit 0), `--json` prints full report object. Centralized copy in `src/cli/copy.ts`.
+
+### Phase 2 Exit Criteria Results
+| Exit Criterion | Status | Evidence / Verification |
+|---|---|---|
+| Fixtures produce expected verdicts (empty, clean-backend, react-mixed, flask-templates) | **PASS** | Automated tests in `test/phase2-exit.test.ts` and `test/trace.test.ts` verify all fixtures produce expected outcomes: `empty` -> empty, `docs-only` -> empty, `clean-express` -> clean (score 1), `react-mixed` -> blocked (score >= 5), `nested-frontend` -> blocked (score >= 5), `flask-templates` -> suspect (score 4), `ignored-noise` -> clean (score 0). |
+| Secret files are never opened | **PASS** | Verified via recording `FsRead` fake in `test/phase2-exit.test.ts` and `test/scan.test.ts` that `readText` is called 0 times on secret files and skipped files. |
+
+---
+
+## Phase 3: Fingerprint, First Extractor, UI-IR
 - **Status**: Not started (next)

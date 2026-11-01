@@ -105,14 +105,60 @@ describe('CLI (src/cli)', () => {
     expect(outputJson.signals).toContain('ANTIGRAVITY_CLI_ALIAS');
   });
 
-  it('upgrade scan with valid dir and consent exits 0', async () => {
-    const ctx = createMockCliContext();
-    const cli = createCli(ctx);
+  it('upgrade scan on clean backend exits 0 with summary', async () => {
+    const dir = 'C:\\project\\app';
+    const ctx = createMockCliContext({
+      existing: ['C:/project/app', 'C:/project/app/server.js', 'C:/project/app/package.json']
+    });
+    // Ensure listDir and stat return the files
+    ctx.fsRead.listDir = vi.fn(async () => ['server.js', 'package.json']);
+    ctx.fsRead.stat = vi.fn(async (p: string) => ({
+      isFile: () => p.endsWith('.js') || p.endsWith('.json'),
+      isDirectory: () => !p.endsWith('.js') && !p.endsWith('.json'),
+      size: 100
+    }));
+    ctx.fsRead.readText = vi.fn(async () => JSON.stringify({ dependencies: { express: '4.18' } }));
 
-    await cli.parseAsync(['node', 'upgrade', 'scan', '--dir', 'C:\\project\\app', '--yes']);
+    const cli = createCli(ctx);
+    await cli.parseAsync(['node', 'upgrade', 'scan', '--dir', dir, '--yes']);
 
     expect(process.exitCode).toBe(0);
-    expect(stdoutLogs.join('\n')).toContain('Workspace confirmed: C:\\project\\app');
+    expect(stdoutLogs.join('\n')).toContain('Backend scanned successfully');
+  });
+
+  it('upgrade scan on empty folder exits with code 12 and roasts', async () => {
+    const dir = 'C:\\project\\empty';
+    const ctx = createMockCliContext({ existing: ['C:/project/empty'] });
+    ctx.fsRead.listDir = vi.fn(async () => []);
+
+    const cli = createCli(ctx);
+    await cli.parseAsync(['node', 'upgrade', 'scan', '--dir', dir, '--yes']);
+
+    expect(process.exitCode).toBe(12);
+    expect(stdoutLogs.join('\n')).toContain("There's ntg here Bruhhh...");
+  });
+
+  it('upgrade scan with frontend traces exits with code 13 and blocked message', async () => {
+    const dir = 'C:\\project\\react-app';
+    const ctx = createMockCliContext({
+      existing: ['C:/project/react-app', 'C:/project/react-app/src/App.jsx']
+    });
+    ctx.fsRead.listDir = vi.fn(async (p: string) => {
+      if (p.endsWith('react-app')) return ['src'];
+      if (p.endsWith('src')) return ['App.jsx'];
+      return [];
+    });
+    ctx.fsRead.stat = vi.fn(async (p: string) => ({
+      isFile: () => p.endsWith('.jsx'),
+      isDirectory: () => !p.endsWith('.jsx'),
+      size: 100
+    }));
+
+    const cli = createCli(ctx);
+    await cli.parseAsync(['node', 'upgrade', 'scan', '--dir', dir, '--yes']);
+
+    expect(process.exitCode).toBe(13);
+    expect(stderrLogs.join('\n')).toContain('Remove the frontend, then run Upgrade again.');
   });
 
   it('upgrade scan with refused dir exits with code 11', async () => {

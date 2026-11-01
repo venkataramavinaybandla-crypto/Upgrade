@@ -3,7 +3,7 @@
 // CRITICAL: CLI layer contains no business logic; it delegates directly to application use-cases.
 
 import { Command } from 'commander';
-import { runDoctorEnv, runScanPhase1, AppError, type ScanDeps, type DoctorDeps } from '../app/index.js';
+import { runDoctorEnv, runScanPhase1, scanWorkspace, AppError, type ScanDeps, type DoctorDeps } from '../app/index.js';
 import { copy } from './copy.js';
 
 export type CliContext = ScanDeps & DoctorDeps;
@@ -97,14 +97,68 @@ export function createCli(context: CliContext): Command {
           return;
         }
 
+        const scanRes = await scanWorkspace(
+          workspaceRef,
+          {
+            yes: globalOpts.yes,
+            nonInteractive: !context.env.isTty()
+          },
+          {
+            fs: context.fsRead,
+            prompt: context.prompt,
+            logger: context.logger
+          }
+        );
+
         if (isJson) {
-          console.log(JSON.stringify(workspaceRef, null, 2));
-        } else {
+          console.log(
+            JSON.stringify(
+              {
+                workspace: workspaceRef,
+                scan: scanRes.scan,
+                trace: scanRes.trace,
+                outcome: scanRes.outcome
+              },
+              null,
+              2
+            )
+          );
+        }
+
+        if (scanRes.outcome === 'empty') {
+          if (!isJson) {
+            console.log(copy.scanEmpty);
+          }
+          process.exitCode = 12;
+          return;
+        }
+
+        if (scanRes.outcome === 'blocked') {
+          if (!isJson) {
+            console.error(copy.scanBlockedHeader);
+            for (const hit of scanRes.trace.hits) {
+              console.error(copy.scanTraceHit(hit.ruleId, hit.weight, hit.path));
+            }
+            console.error(copy.scanRemoveFrontend);
+          }
+          process.exitCode = 13;
+          return;
+        }
+
+        if (!isJson) {
           console.log(copy.workspaceConfirmed(workspaceRef.root));
           console.log(copy.workspaceSource(workspaceRef.source));
           console.log(copy.projectMarkers(workspaceRef.projectMarkers));
-          console.log(copy.consentGranted);
+          console.log(
+            copy.scanCleanSummary(
+              scanRes.scan.fileCount,
+              scanRes.scan.totalBytes,
+              scanRes.scan.truncated,
+              scanRes.scan.secretFilesSkipped
+            )
+          );
         }
+        process.exitCode = 0;
       } catch (err: any) {
         if (err instanceof AppError) {
           console.error(copy.usageError(err.message));

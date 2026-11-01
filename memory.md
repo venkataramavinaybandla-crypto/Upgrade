@@ -81,3 +81,4 @@ Sources are summarized, not quoted. Re-verify anything marked UNVERIFIED before 
 | 2026-10-31 | Phase 0 completed: TypeScript scaffold, contracts, ports, boundary checker, test runner, check script. |
 | 2026-10-31 | Corrected context.md runtime layout: recent.json moved from project .upgrade/ to user-level config (D-020). Deferred folder browsing to Phase 8 (D-019). |
 | 2026-10-31 | Phase 1 completed: host classifier, workspace guards & path jail, consent & workspace resolution use-cases, infra adapters, minimal CLI shell (doctor --env, scan). All exit criteria verified. |
+| 2026-11-01 | Phase 2 completed: filesystem scanner (ignore rules, secret skipping, code verdict), 11-rule frontend trace scorer with sandboxed TraceReader, scanWorkspace use-case (suspect handling, D-023), CLI wiring for scan verdicts and exit codes (12 empty, 13 blocked). All Phase 2 exit criteria passed. |
