@@ -155,6 +155,9 @@
     "RecentStore": [
       "getRecent()",
       "addRecent(path)"
+    ],
+    "Hash": [
+      "sha256(text)"
     ]
   },
   "modules": [
@@ -398,6 +401,15 @@
       "routes": "{ added: string[], removed: string[], changed: string[] }",
       "renameCandidates": "Array<{ kind: field | entity, from: string, to: string, score: number }>",
       "affectedFiles": "Array<{ path: string, state: regenerate | conflict | skip-custom }>"
+    },
+    "ExtractorReader": {
+      "readText": "(relPath: string) => Promise<string>"
+    },
+    "Extractor": {
+      "stackId": "string",
+      "version": "string",
+      "supports": "(fp: StackFingerprint) => boolean",
+      "extract": "(ctx: { root: string, scan: ScanReport, read: ExtractorReader }) => Promise<UIIR>"
     }
   },
   "config": {
@@ -605,6 +617,21 @@
       "gate": "Readiness gate must pass before any sync",
       "removedField": "OPEN QUESTION Q-002 (default until decided: flag and ask)",
       "editedGeneratedFile": "Write <file>.upgrade-new beside it, show a diff, never overwrite."
+    },
+    "fingerprint": {
+      "matchThreshold": 0.6,
+      "leadThreshold": 0.2,
+      "unknownThreshold": 0.4,
+      "manifestMaxDepth": 2,
+      "manifests": [
+        "package.json",
+        "requirements.txt",
+        "pyproject.toml",
+        "Pipfile",
+        "go.mod",
+        "pom.xml",
+        "composer.json"
+      ]
     }
   },
   "cli": {

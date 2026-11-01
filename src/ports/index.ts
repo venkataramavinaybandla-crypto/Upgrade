@@ -72,3 +72,8 @@ export interface RecentStore {
   addRecent(path: string): Promise<void>;
 }
 
+export interface Hash {
+  sha256(text: string): string;
+}
+
+

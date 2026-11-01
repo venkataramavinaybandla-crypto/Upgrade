@@ -3,7 +3,7 @@
 // CRITICAL: Throws if consent missing; suspect outcomes require interactive confirmation or default to blocked.
 
 import type { EnvSnapshot, HostContext, WorkspaceRef, ScanReport, FrontendTraceReport } from '../contracts/index.js';
-import type { FsRead, Env, Prompt, RecentStore, Logger } from '../ports/index.js';
+import type { FsRead, Env, Prompt, RecentStore, Logger, Hash } from '../ports/index.js';
 import { classifyHost } from '../core/env/index.js';
 import { scan } from '../core/scan/index.js';
 import { evaluateTrace, createTraceReader } from '../core/trace/index.js';
@@ -21,8 +21,10 @@ export interface ScanDeps {
   prompt: Prompt;
   recentStore?: RecentStore;
   logger?: Logger;
+  hash?: Hash;
   buildSnapshot: (env: Env) => EnvSnapshot;
 }
+
 
 export interface ScanPhase1Result {
   hostContext: HostContext;

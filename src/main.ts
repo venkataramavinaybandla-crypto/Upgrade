@@ -2,7 +2,15 @@
 // ROLE: CLI composition root that instantiates concrete infra adapters and passes them to the CLI program.
 // INPUTS: Process arguments process.argv: string[].
 // CRITICAL: Only file in the repository permitted to import directly from src/infra.
-import { NodeEnv, NodeFsRead, ReadlinePrompt, JsonRecentStore, ConsoleLogger, buildEnvSnapshot } from './infra/index.js';
+import {
+  NodeEnv,
+  NodeFsRead,
+  ReadlinePrompt,
+  JsonRecentStore,
+  ConsoleLogger,
+  NodeHash,
+  buildEnvSnapshot
+} from './infra/index.js';
 import { createCli } from './cli/index.js';
 
 export async function main(argv: string[] = process.argv): Promise<void> {
@@ -11,6 +19,7 @@ export async function main(argv: string[] = process.argv): Promise<void> {
   const prompt = new ReadlinePrompt();
   const recentStore = new JsonRecentStore();
   const logger = new ConsoleLogger();
+  const hash = new NodeHash();
 
   const cli = createCli({
     env,
@@ -18,8 +27,10 @@ export async function main(argv: string[] = process.argv): Promise<void> {
     prompt,
     recentStore,
     logger,
+    hash,
     buildSnapshot: buildEnvSnapshot
   });
+
 
   await cli.parseAsync(argv);
 }

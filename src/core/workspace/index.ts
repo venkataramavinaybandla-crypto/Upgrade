@@ -28,6 +28,27 @@ function normalizePath(p: string, platform: 'win32' | 'darwin' | 'linux'): strin
   let normalized = p.replace(/\\/g, '/');
   // Collapse duplicate slashes except at the very beginning
   normalized = normalized.replace(/\/{2,}/g, '/');
+
+  // Collapse '.' and '..' segments
+  const parts = normalized.split('/');
+  const stack: string[] = [];
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+    if (part === '.' || (part === '' && i > 0 && i < parts.length - 1)) {
+      continue;
+    }
+    if (part === '..') {
+      if (stack.length > 0 && stack[stack.length - 1] !== '..' && stack[stack.length - 1] !== '') {
+        stack.pop();
+      } else {
+        stack.push('..');
+      }
+    } else {
+      stack.push(part);
+    }
+  }
+  normalized = stack.join('/');
+
   // Remove trailing slash unless it's root '/' or 'C:/'
   if (normalized.length > 1 && normalized.endsWith('/')) {
     if (!/^[a-zA-Z]:\/$/.test(normalized)) {
@@ -42,6 +63,7 @@ function normalizePath(p: string, platform: 'win32' | 'darwin' | 'linux'): strin
   }
   return normalized;
 }
+
 
 function isFsOrDriveRoot(p: string): boolean {
   // '/' or 'C:' or 'C:/'

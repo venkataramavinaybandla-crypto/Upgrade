@@ -33,6 +33,9 @@ Status values: `decided` (user said so), `proposed` (agent suggestion awaiting t
 | D-021 | 2026-10-31 | In-terminal folder browsing deferred to Phase 8 | Plain-terminal offers recent folders and typed/pasted path in Phase 1 minimal shell | decided |
 | D-022 | 2026-10-31 | User-level storage for recent.json | Recent workspaces are global to the user, not per-project | decided |
 | D-023 | 2026-11-01 | Suspect frontends treated as blocked in non-interactive mode and with --yes | Avoids generating over potential existing frontends without explicit interactive confirmation | decided |
+| D-024 | 2026-11-01 | Additive contracts and ports for Phase 3: Hash port in ports/infra, ExtractorReader and Extractor contracts | Provides safe extraction primitives and hash abstraction without contract bump | decided |
+| D-025 | 2026-11-01 | hashIR excludes source.extractorVersion and warnings from sha256 calculation | Ensures IR hash changes only when domain schema and routes change | decided |
+
 
 ## 2. Research findings (2026-10-31)
 

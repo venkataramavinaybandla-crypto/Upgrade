@@ -271,3 +271,15 @@ export const SyncDiffSchema = z.object({
 });
 export type SyncDiff = z.infer<typeof SyncDiffSchema>;
 
+export interface ExtractorReader {
+  readText(relPath: string): Promise<string>;
+}
+
+export interface Extractor {
+  stackId: string;
+  version: string;
+  supports(fp: StackFingerprint): boolean;
+  extract(ctx: { root: string; scan: ScanReport; read: ExtractorReader }): Promise<UIIR>;
+}
+
+
