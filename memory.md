@@ -32,6 +32,7 @@ Status values: `decided` (user said so), `proposed` (agent suggestion awaiting t
 | D-020 | 2026-10-31 | Planning files (context.md, architecture.json, memory.md, workflows.md) stay tracked in git; the gitignore idea was dropped | Central source of truth across agent sessions | decided |
 | D-021 | 2026-10-31 | In-terminal folder browsing deferred to Phase 8 | Plain-terminal offers recent folders and typed/pasted path in Phase 1 minimal shell | decided |
 | D-022 | 2026-10-31 | User-level storage for recent.json | Recent workspaces are global to the user, not per-project | decided |
+| D-023 | 2026-11-01 | Suspect frontends treated as blocked in non-interactive mode and with --yes | Avoids generating over potential existing frontends without explicit interactive confirmation | decided |
 
 ## 2. Research findings (2026-10-31)
 

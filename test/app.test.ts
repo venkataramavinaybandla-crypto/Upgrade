@@ -3,7 +3,9 @@
 // CRITICAL: Ensures plain terminals never use cwd by default and non-interactive requires flags.
 
 import { describe, it, expect, vi } from 'vitest';
-import { askConsent, resolveWorkspace, cleanCandidatePath, AppError } from '../src/app/index.js';
+import path from 'node:path';
+import { askConsent, resolveWorkspace, cleanCandidatePath, scanWorkspace, AppError } from '../src/app/index.js';
+import { NodeFsRead } from '../src/infra/fs-read.js';
 import type { HostContext, WorkspaceRef } from '../src/contracts/index.js';
 import type { FsRead, Env, Prompt, RecentStore, FileStat } from '../src/ports/index.js';
 
@@ -217,6 +219,80 @@ describe('src/app Use-Cases', () => {
       expect(prompt.select).toHaveBeenCalled();
       expect(ws.root).toBe(recentPath);
       expect(ws.source).toBe('recent');
+    });
+  });
+
+  describe('scanWorkspace use-case', () => {
+    const makeWs = (rel: string, consentGranted = true): WorkspaceRef => ({
+      root: path.resolve(`test/fixtures/${rel}`),
+      source: 'argument',
+      verdict: 'ok',
+      projectMarkers: [],
+      consentGranted
+    });
+
+    const realFs = new NodeFsRead();
+
+    it('throws if consent is not granted', async () => {
+      const ws = makeWs('clean-express', false);
+      const prompt = createMockPrompt();
+      await expect(scanWorkspace(ws, {}, { fs: realFs, prompt })).rejects.toThrow('Consent not granted');
+    });
+
+    it('returns outcome empty on empty workspace', async () => {
+      const ws = makeWs('empty');
+      const prompt = createMockPrompt();
+      const res = await scanWorkspace(ws, {}, { fs: realFs, prompt });
+      expect(res.outcome).toBe('empty');
+      expect(res.scan.verdict).toBe('empty');
+    });
+
+    it('returns outcome clean on clean backend', async () => {
+      const ws = makeWs('clean-express');
+      const prompt = createMockPrompt();
+      const res = await scanWorkspace(ws, {}, { fs: realFs, prompt });
+      expect(res.outcome).toBe('clean');
+      expect(res.trace.verdict).toBe('clean');
+    });
+
+    it('returns outcome blocked on frontend trace above threshold', async () => {
+      const ws = makeWs('react-mixed');
+      const prompt = createMockPrompt();
+      const res = await scanWorkspace(ws, {}, { fs: realFs, prompt });
+      expect(res.outcome).toBe('blocked');
+      expect(res.trace.verdict).toBe('blocked');
+    });
+
+    it('treats suspect as blocked when --yes is true', async () => {
+      const ws = makeWs('flask-templates');
+      const prompt = createMockPrompt();
+      const res = await scanWorkspace(ws, { yes: true }, { fs: realFs, prompt });
+      expect(res.outcome).toBe('blocked');
+      expect(prompt.confirm).not.toHaveBeenCalled();
+    });
+
+    it('treats suspect as blocked when nonInteractive is true', async () => {
+      const ws = makeWs('flask-templates');
+      const prompt = createMockPrompt();
+      const res = await scanWorkspace(ws, { nonInteractive: true }, { fs: realFs, prompt });
+      expect(res.outcome).toBe('blocked');
+      expect(prompt.confirm).not.toHaveBeenCalled();
+    });
+
+    it('confirms suspect interactively and marks clean on yes', async () => {
+      const ws = makeWs('flask-templates');
+      const prompt = createMockPrompt({ confirm: vi.fn().mockResolvedValue(true) });
+      const res = await scanWorkspace(ws, {}, { fs: realFs, prompt });
+      expect(prompt.confirm).toHaveBeenCalledWith(expect.stringContaining('not a frontend'));
+      expect(res.outcome).toBe('clean');
+    });
+
+    it('confirms suspect interactively and marks blocked on no', async () => {
+      const ws = makeWs('flask-templates');
+      const prompt = createMockPrompt({ confirm: vi.fn().mockResolvedValue(false) });
+      const res = await scanWorkspace(ws, {}, { fs: realFs, prompt });
+      expect(prompt.confirm).toHaveBeenCalledWith(expect.stringContaining('not a frontend'));
+      expect(res.outcome).toBe('blocked');
     });
   });
 });
